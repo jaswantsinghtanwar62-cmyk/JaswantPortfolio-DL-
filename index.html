@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jaswant Singh Tanwar | Anti-Gravity Portfolio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#0b0f19',
+                        cardBg: 'rgba(17, 24, 39, 0.75)',
+                        cyanGlow: '#00f2fe',
+                        blueGlow: '#4facfe',
+                        accentPurple: '#7000ff'
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        heading: ['Space Grotesk', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0b0f19;
+            color: #f1f5f9;
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism card effects */
+        .glass-card {
+            background: rgba(17, 24, 39, 0.65);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(0, 242, 254, 0.4);
+            box-shadow: 0 10px 30px -10px rgba(0, 242, 254, 0.3);
+        }
+
+        /* Gradient text effect */
+        .gradient-text {
+            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 50%, #7000ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Anti-gravity floating keyframe animation */
+        @keyframes antiGravityFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(1.5deg); }
+        }
+
+        .animate-float {
+            animation: antiGravityFloat 6s ease-in-out infinite;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0f19;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f2fe;
+        }
+    </style>
+</head>
+<body class="relative min-h-screen selection:bg-cyanGlow selection:text-black">
+
+    <!-- Interactive Anti-Gravity Physics Canvas Background -->
+    <canvas id="gravity-canvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-0"></canvas>
+
+    <!-- Glowing Background Ambient Spheres -->
+    <div class="fixed top-20 left-10 w-80 h-80 bg-cyanGlow/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="fixed bottom-20 right-10 w-96 h-96 bg-accentPurple/15 rounded-full blur-3xl pointer-events-none"></div>
+
+    <header class="fixed top-0 left-0 right-0 z-50 px-6 py-4 backdrop-blur-md bg-darkBg/70 border-b border-white/10">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold font-heading tracking-widest text-white flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-cyanGlow shadow-[0_0_10px_#00f2fe]"></span> JST<span class="text-cyanGlow">.DEV</span>
+            </a>
+            
+            <nav class="hidden md:flex space-x-8 text-sm uppercase tracking-wider font-semibold text-slate-300">
+                <a href="#about" class="hover:text-cyanGlow transition-colors">About</a>
+                <a href="#skills" class="hover:text-cyanGlow transition-colors">Skills</a>
+                <a href="#projects" class="hover:text-cyanGlow transition-colors">Projects</a>
+                <a href="#education" class="hover:text-cyanGlow transition-colors">Education</a>
+                <a href="#contact" class="hover:text-cyanGlow transition-colors">Contact</a>
+            </nav>
+
+            <div class="flex items-center gap-4">
+                <a href="#contact" class="hidden sm:inline-block px-5 py-2 rounded-full border border-cyanGlow/50 text-cyanGlow hover:bg-cyanGlow hover:text-black transition-all duration-300 font-medium text-sm shadow-[0_0_15px_rgba(0,242,254,0.2)]">
+                    Get In Touch
+                </a>
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden text-slate-300 hover:text-cyanGlow p-2 focus:outline-none" aria-label="Toggle navigation menu">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="hidden md:hidden px-4 pt-4 pb-6 space-y-3 bg-darkBg/95 border-b border-white/10 backdrop-blur-lg">
+            <a href="#about" class="block text-slate-300 hover:text-cyanGlow transition-colors py-1">About</a>
+            <a href="#skills" class="block text-slate-300 hover:text-cyanGlow transition-colors py-1">Skills</a>
+            <a href="#projects" class="block text-slate-300 hover:text-cyanGlow transition-colors py-1">Projects</a>
+            <a href="#education" class="block text-slate-300 hover:text-cyanGlow transition-colors py-1">Education</a>
+            <a href="#contact" class="block text-slate-300 hover:text-cyanGlow transition-colors py-1">Contact</a>
+            <div class="pt-2">
+                <a href="#contact" class="block text-center px-5 py-2 rounded-full border border-cyanGlow/50 text-cyanGlow hover:bg-cyanGlow hover:text-black transition-all duration-300 font-medium text-sm">
+                    Get In Touch
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <section class="relative min-h-screen flex items-center justify-center pt-28 pb-16 px-6 z-10">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            
+            <!-- Hero Text Content -->
+            <div class="space-y-6 text-center lg:text-left">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-cyanGlow/30 bg-cyanGlow/10 text-cyanGlow text-xs uppercase tracking-widest font-semibold">
+                    <i class="fa-solid fa-graduation-cap"></i> CSE Core @ JECRC University
+                </div>
+                
+                <h1 class="text-4xl sm:text-6xl font-extrabold font-heading tracking-tight leading-tight">
+                    Hi, I'm <br />
+                    <span class="gradient-text">Jaswant Singh Tanwar</span>
+                </h1>
+                
+                <p class="text-slate-300 text-lg max-w-lg mx-auto lg:mx-0 font-light leading-relaxed">
+                    Computer Science & Engineering Student | CSE Core at JECRC University. Exploring Code, Algorithms, and Future Anti-Gravity Tech.
+                </p>
+
+                <div class="flex flex-wrap justify-center lg:justify-start gap-4 pt-4">
+                    <a href="#projects" class="px-7 py-3.5 rounded-xl bg-gradient-to-r from-cyanGlow to-blueGlow text-black font-bold hover:shadow-[0_0_25px_rgba(0,242,254,0.5)] transition-all duration-300 transform hover:-translate-y-1">
+                        Explore Projects <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                    </a>
+                    <a href="#contact" class="px-7 py-3.5 rounded-xl glass-card text-white hover:border-cyanGlow/60 transition-all duration-300 flex items-center gap-2">
+                        Contact Me
+                    </a>
+                </div>
+            </div>
+
+            <!-- Floating Hero Visual (Anti-Gravity Theme Card) -->
+            <div class="relative flex items-center justify-center">
+                <div class="anti-gravity-card glass-card p-8 rounded-3xl max-w-md w-full animate-float relative z-10 shadow-2xl">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-cyanGlow to-accentPurple flex items-center justify-center text-black font-bold text-2xl shadow-lg">
+                            JST
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">Jaswant Singh Tanwar</h3>
+                            <p class="text-xs text-cyanGlow font-medium uppercase tracking-wider">B.Tech CSE Core Student</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3 text-sm text-slate-300">
+                        <div class="flex justify-between py-2 border-b border-white/10">
+                            <span class="text-slate-400">Institution:</span>
+                            <span class="font-medium text-white">JECRC University</span>
+                        </div>
+                        <div class="flex justify-between py-2 border-b border-white/10">
+                            <span class="text-slate-400">Specialization:</span>
+                            <span class="font-medium text-white">CSE Core</span>
+                        </div>
+                        <div class="flex justify-between py-2">
+                            <span class="text-slate-400">Focus:</span>
+                            <span class="font-medium text-cyanGlow">C++, Web Dev & DSA</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t border-white/10 flex justify-around text-center text-xs">
+                        <div>
+                            <span class="block text-lg font-bold text-white">2026</span>
+                            <span class="text-slate-400">Current Year</span>
+                        </div>
+                        <div>
+                            <span class="block text-lg font-bold text-cyanGlow">Live</span>
+                            <span class="text-slate-400">Netlify Deployment</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="about" class="py-20 px-6 relative z-10">
+        <div class="max-w-4xl mx-auto glass-card p-10 rounded-3xl">
+            <div class="text-center mb-8">
+                <h2 class="text-xs font-semibold uppercase tracking-widest text-cyanGlow mb-2">Introduction</h2>
+                <p class="text-3xl font-extrabold font-heading text-white">About Me</p>
+            </div>
+
+            <p class="text-slate-300 leading-relaxed text-center text-base md:text-lg">
+                I am <strong class="text-white">Jaswant Singh Tanwar</strong>, currently pursuing my B.Tech in Computer Science and Engineering (Core) at JECRC University. I am passionate about understanding core software engineering principles, building responsive web platforms, and mastering Data Structures & Algorithms. My goal is to build high-performance, modern web applications that provide seamless user experiences.
+            </p>
+        </div>
+    </section>
+
+    <section id="skills" class="py-20 px-6 relative z-10">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-14">
+                <h2 class="text-xs font-semibold uppercase tracking-widest text-cyanGlow mb-2">Capabilities</h2>
+                <p class="text-3xl font-extrabold font-heading text-white">Skills & Technologies</p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                <!-- Skill 1 -->
+                <div class="anti-gravity-card glass-card p-6 rounded-2xl text-center hover:border-cyanGlow/50">
+                    <i class="fa-solid fa-code text-4xl text-cyanGlow mb-3"></i>
+                    <h4 class="font-bold text-white mb-1">C / C++</h4>
+                    <p class="text-xs text-slate-400">Core Logic & OOP</p>
+                </div>
+
+                <!-- Skill 2 -->
+                <div class="anti-gravity-card glass-card p-6 rounded-2xl text-center hover:border-cyanGlow/50">
+                    <i class="fa-solid fa-diagram-project text-4xl text-blueGlow mb-3"></i>
+                    <h4 class="font-bold text-white mb-1">Data Structures</h4>
+                    <p class="text-xs text-slate-400">Problem Solving</p>
+                </div>
+
+                <!-- Skill 3 -->
+                <div class="anti-gravity-card glass-card p-6 rounded-2xl text-center hover:border-cyanGlow/50">
+                    <i class="fa-brands fa-html5 text-4xl text-orange-400 mb-3"></i>
+                    <h4 class="font-bold text-white mb-1">HTML5 / CSS3</h4>
+                    <p class="text-xs text-slate-400">Responsive Design</p>
+                </div>
+
+                <!-- Skill 4 -->
+                <div class="anti-gravity-card glass-card p-6 rounded-2xl text-center hover:border-cyanGlow/50">
+                    <i class="fa-brands fa-js text-4xl text-yellow-400 mb-3"></i>
+                    <h4 class="font-bold text-white mb-1">JavaScript</h4>
+                    <p class="text-xs text-slate-400">DOM & Physics API</p>
+                </div>
+
+                <!-- Skill 5 -->
+                <div class="anti-gravity-card glass-card p-6 rounded-2xl text-center hover:border-cyanGlow/50">
+                    <i class="fa-brands fa-git-alt text-4xl text-red-400 mb-3"></i>
+                    <h4 class="font-bold text-white mb-1">Git & GitHub</h4>
+                    <p class="text-xs text-slate-400">Version Control</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects" class="py-20 px-6 relative z-10">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-14">
+                <h2 class="text-xs font-semibold uppercase tracking-widest text-cyanGlow mb-2">Portfolio</h2>
+                <p class="text-3xl font-extrabold font-heading text-white">Featured Projects</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Project 1 -->
+                <div class="anti-gravity-card glass-card rounded-3xl overflow-hidden p-6 space-y-4">
+                    <div class="w-12 h-12 rounded-xl bg-cyanGlow/20 flex items-center justify-center text-cyanGlow text-xl">
+                        <i class="fa-solid fa-atom"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white">Anti-Gravity Portfolio</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Interactive web application built with HTML5 canvas particles, zero-gravity floating card physics, and modern glassmorphism styling.</p>
+                    <div class="pt-2 flex flex-wrap gap-2 text-xs text-cyanGlow font-mono">
+                        <span>#HTML5</span> <span>#CanvasAPI</span> <span>#Netlify</span>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="anti-gravity-card glass-card rounded-3xl overflow-hidden p-6 space-y-4">
+                    <div class="w-12 h-12 rounded-xl bg-blueGlow/20 flex items-center justify-center text-blueGlow text-xl">
+                        <i class="fa-solid fa-laptop-code"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white">Digital Literacy Portal</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Academic project showcasing continuous integration, GitHub repository version control, and automated Netlify site hosting deployment.</p>
+                    <div class="pt-2 flex flex-wrap gap-2 text-xs text-blueGlow font-mono">
+                        <span>#GitHub</span> <span>#Deployment</span> <span>#WebDev</span>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="anti-gravity-card glass-card rounded-3xl overflow-hidden p-6 space-y-4">
+                    <div class="w-12 h-12 rounded-xl bg-accentPurple/20 flex items-center justify-center text-purple-400 text-xl">
+                        <i class="fa-solid fa-network-wired"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white">Algorithm Visualizer</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Upcoming interactive learning tool for visual representation of sorting, searching, and graph traversal algorithms in C++ & JS.</p>
+                    <div class="pt-2 flex flex-wrap gap-2 text-xs text-purple-400 font-mono">
+                        <span>#CPP</span> <span>#DSA</span> <span>#Algorithms</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="education" class="py-20 px-6 relative z-10">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-14">
+                <h2 class="text-xs font-semibold uppercase tracking-widest text-cyanGlow mb-2">Academic Background</h2>
+                <p class="text-3xl font-extrabold font-heading text-white">Education</p>
+            </div>
+
+            <div class="glass-card p-8 rounded-3xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                <div class="space-y-2">
+                    <span class="px-3 py-1 rounded-full bg-cyanGlow/10 text-cyanGlow text-xs font-semibold uppercase">2026 - Present</span>
+                    <h3 class="text-2xl font-bold text-white">B.Tech in Computer Science Engineering (CSE Core)</h3>
+                    <p class="text-slate-400">JECRC University, Jaipur, Rajasthan</p>
+                </div>
+                <div class="text-right">
+                    <span class="inline-block text-slate-300 text-sm bg-white/5 border border-white/10 px-4 py-2 rounded-xl">
+                        Focus: Computer Science Core & Digital Literacy
+                    </span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-20 px-6 relative z-10">
+        <div class="max-w-3xl mx-auto glass-card p-10 rounded-3xl border border-white/10 text-center space-y-8">
+            <div>
+                <h2 class="text-xs font-semibold uppercase tracking-widest text-cyanGlow mb-2">Connect</h2>
+                <p class="text-3xl font-extrabold font-heading text-white">Get In Touch</p>
+                <p class="text-slate-400 text-sm mt-2">Feel free to reach out for project collaboration or questions.</p>
+            </div>
+
+            <div class="flex justify-center gap-6 text-2xl">
+                <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="w-12 h-12 rounded-xl glass-card flex items-center justify-center text-white hover:text-cyanGlow transition-colors" title="GitHub">
+                    <i class="fa-brands fa-github"></i>
+                </a>
+                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="w-12 h-12 rounded-xl glass-card flex items-center justify-center text-white hover:text-cyanGlow transition-colors" title="LinkedIn">
+                    <i class="fa-brands fa-linkedin-in"></i>
+                </a>
+                <a href="mailto:jaswantsingh@example.com" class="w-12 h-12 rounded-xl glass-card flex items-center justify-center text-white hover:text-cyanGlow transition-colors" title="Email">
+                    <i class="fa-solid fa-envelope"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-8 text-center text-slate-500 text-sm border-t border-white/5 relative z-10">
+        <p>&copy; 2026 Jaswant Singh Tanwar | JECRC University CSE Core. Built with Anti-Gravity physics.</p>
+    </footer>
+
+    <script>
+        // Anti-Gravity Floating Particle Background Engine
+        const canvas = document.getElementById('gravity-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        let particles = [];
+        let mouse = { x: null, y: null, radius: 120 };
+
+        function resizeCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        window.addEventListener('mouseleave', () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.size = Math.random() * 2.5 + 1;
+                this.baseVx = (Math.random() - 0.5) * 0.6;
+                this.baseVy = -Math.random() * 0.8 - 0.2; // Float upwards (Anti-Gravity)
+                this.vx = this.baseVx;
+                this.vy = this.baseVy;
+                this.alpha = Math.random() * 0.5 + 0.2;
+                this.color = Math.random() > 0.5 ? '#00f2fe' : '#4facfe';
+            }
+
+            update() {
+                // Interactive anti-gravity repulsion from mouse
+                if (mouse.x !== null && mouse.y !== null) {
+                    const dx = this.x - mouse.x;
+                    const dy = this.y - mouse.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < mouse.radius && dist > 0) {
+                        const force = (mouse.radius - dist) / mouse.radius;
+                        this.x += (dx / dist) * force * 3;
+                        this.y += (dy / dist) * force * 3;
+                    }
+                }
+
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Reset particle to bottom when reaching top
+                if (this.y < 0) {
+                    this.y = height;
+                    this.x = Math.random() * width;
+                }
+                if (this.x < 0) this.x = width;
+                if (this.x > width) this.x = 0;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        // Create anti-gravity particles
+        const particleCount = Math.min(80, Math.floor((window.innerWidth * window.innerHeight) / 15000));
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, width, height);
+            
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+            }
+
+            requestAnimationFrame(animateParticles);
+        }
+
+        // Card Hover Anti-Gravity Tilt Effect
+        document.querySelectorAll('.anti-gravity-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                card.style.transform = `perspective(800px) rotateX(${-y / 20}deg) rotateY(${x / 20}deg) translateY(-6px)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(800px) rotateX(0deg) rotateY(0deg) translateY(0px)`;
+            });
+        });
+
+        // Mobile Menu Toggle
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileBtn && mobileMenu) {
+            mobileBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+        }
+
+        // Run animation loop
+        animateParticles();
+    </script>
+</body>
+</html>
